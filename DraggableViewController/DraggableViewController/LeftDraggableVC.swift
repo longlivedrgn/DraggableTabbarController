@@ -53,6 +53,7 @@ class LeftDraggableVC: UIViewController {
             if translation.x < 0 {
                 self.view.frame.origin = CGPoint(x: translation.x, y: 0)
             }
+            self.delegate?.leftViewControllerDidDismiss()
         case .ended:
             guard let originalPosition = self.originalPosition else { return }
             let velocity = panGesture.velocity(in: view)
@@ -74,7 +75,6 @@ class LeftDraggableVC: UIViewController {
                 completion: { (isCompleted) in
                     if isCompleted {
                         self.dismiss(animated: false, completion: nil)
-                        self.delegate?.leftViewControllerDidDismiss()
                     }
                 }
             )

@@ -45,6 +45,8 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
         self.view.addGestureRecognizer(panGesture)
     }
     
+    private var isStartInTranslationZeroX = false
+    
     private func setupCamera() {
         captureSession = AVCaptureSession()
         
@@ -120,8 +122,21 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
                 print("🏁 ➡️ Drag begin \(translation.x)")
                 interactionController = UIPercentDrivenInteractiveTransition()
                 presentLeftPannableViewController()
+            } else {
+                isStartInTranslationZeroX = true
             }
+            
         case .changed:
+            if isStartInTranslationZeroX == true {
+                if translation.x < 0 {  // 오른쪽에서 왼쪽으로 드래그
+                    interactionController = UIPercentDrivenInteractiveTransition()
+                    presentRightPannableViewController()
+                } else if translation.x > 0 {  // 왼쪽에서 오른쪽으로 드래그
+                    interactionController = UIPercentDrivenInteractiveTransition()
+                    presentLeftPannableViewController()
+                }
+                isStartInTranslationZeroX = false
+            }
             print("🏃🏻‍♂️Drag changed \(translation.x)")
             if let interactionController = interactionController {
                 interactionController.update(progress)
@@ -129,7 +144,8 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
         case .ended, .cancelled:
             print("✅ Drag ended")
             guard let interactionController = interactionController else { return }
-            if progress > 0.5 || abs(gesture.velocity(in: view).x) > 300 {
+//            if progress > 0.5 || abs(gesture.velocity(in: view).x) > 300 {
+            if progress > 0.5 {
                 interactionController.finish()
                 DispatchQueue.main.async {
                     self.captureSession?.stopRunning()
