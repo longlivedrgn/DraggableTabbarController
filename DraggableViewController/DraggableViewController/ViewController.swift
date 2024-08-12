@@ -1,18 +1,18 @@
-//
-//  ViewController.swift
-//  DraggableViewController
-//
-//  Created by 김용재 on 8/12/24.
-//
-
 import UIKit
 import AVFoundation
 
-class ViewController: UIViewController, RightDraggableVCDelegate {
+class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableVCDelegate {
+    
     func viewControllerPannableDidDismissed() {
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                self?.captureSession?.startRunning()
-            }
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.captureSession?.startRunning()
+        }
+    }
+    
+    func leftViewControllerDidDismiss() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.captureSession?.startRunning()
+        }
     }
 
     private var interactionController: UIPercentDrivenInteractiveTransition?
@@ -33,18 +33,17 @@ class ViewController: UIViewController, RightDraggableVCDelegate {
         setupCamera()
 
         NSLayoutConstraint.activate([
-              previewView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-              previewView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-              previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-              previewView.heightAnchor.constraint(equalToConstant: 300) // 높이를 300으로 설정
-          ])
+            previewView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            previewView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            previewView.heightAnchor.constraint(equalToConstant: 300)
+        ])
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
         panGesture.delaysTouchesBegan = false
         panGesture.delaysTouchesEnded = false
         self.view.addGestureRecognizer(panGesture)
     }
-    
     
     private func setupCamera() {
         captureSession = AVCaptureSession()
@@ -80,19 +79,22 @@ class ViewController: UIViewController, RightDraggableVCDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         print("viewWillAppear")
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         print("viewDidAppear")
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         print("viewDidDisappear")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         print("viewWillDisappear")
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.captureSession?.stopRunning()
@@ -104,45 +106,55 @@ class ViewController: UIViewController, RightDraggableVCDelegate {
         previewLayer?.frame = previewView.bounds
     }
     
-    
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: view)
-        let progress = -translation.x / view.bounds.width  // 부호를 변경
+        let progress = abs(translation.x) / view.bounds.width
         
         switch gesture.state {
         case .began:
-            print(translation.x)
-            if translation.x <= 0 {  // 오른쪽에서 왼쪽으로 드래그할 때만 시작
+            if translation.x < 0 {  // 오른쪽에서 왼쪽으로 드래그
+                print("🏁 ⬅️ Drag begin \(translation.x)")
                 interactionController = UIPercentDrivenInteractiveTransition()
-                presentPannableViewController()
+                presentRightPannableViewController()
+            } else if translation.x > 0 {  // 왼쪽에서 오른쪽으로 드래그
+                print("🏁 ➡️ Drag begin \(translation.x)")
+                interactionController = UIPercentDrivenInteractiveTransition()
+                presentLeftPannableViewController()
             }
         case .changed:
+            print("🏃🏻‍♂️Drag changed \(translation.x)")
             if let interactionController = interactionController {
-                interactionController.update(max(0, min(1, progress)))
+                interactionController.update(progress)
             }
         case .ended, .cancelled:
+            print("✅ Drag ended")
             guard let interactionController = interactionController else { return }
-            if progress > 0.5 || gesture.velocity(in: view).x < -300 {
+            if progress > 0.5 || abs(gesture.velocity(in: view).x) > 300 {
                 interactionController.finish()
                 DispatchQueue.main.async {
                     self.captureSession?.stopRunning()
                 }
             } else {
                 interactionController.cancel()
-                print("cancel입니다아아~!!🥹")
             }
             self.interactionController = nil
-            print("여기에유~!!~🙇‍♂️")
-//            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-//                self?.captureSession?.stopRunning()
-//            }
         default:
             break
         }
     }
     
-    private func presentPannableViewController() {
+    private func presentRightPannableViewController() {
         let rootVC = RightDraggableVC()
+        rootVC.delegate = self
+        let vc = UINavigationController(rootViewController: rootVC)
+        
+        vc.modalPresentationStyle = .custom
+        vc.transitioningDelegate = self
+        self.present(vc, animated: true)
+    }
+    
+    private func presentLeftPannableViewController() {
+        let rootVC = LeftDraggableVC()
         rootVC.delegate = self
         let vc = UINavigationController(rootViewController: rootVC)
         
@@ -154,7 +166,12 @@ class ViewController: UIViewController, RightDraggableVCDelegate {
 
 extension ViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PresentAnimator()
+        if presented.children.first is RightDraggableVC {
+            return PresentRightAnimator()
+        } else if presented.children.first is LeftDraggableVC {
+            return PresentLeftAnimator()
+        }
+        return nil
     }
     
     func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
@@ -162,7 +179,7 @@ extension ViewController: UIViewControllerTransitioningDelegate {
     }
 }
 
-class PresentAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+class PresentRightAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
@@ -173,7 +190,7 @@ class PresentAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         let containerView = transitionContext.containerView
         let finalFrame = transitionContext.finalFrame(for: toVC)
         
-        toVC.view.frame = finalFrame.offsetBy(dx: finalFrame.width, dy: 0)  // 시작 위치를 오른쪽으로 변경
+        toVC.view.frame = finalFrame.offsetBy(dx: finalFrame.width, dy: 0)
         containerView.addSubview(toVC.view)
         
         UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
@@ -184,5 +201,24 @@ class PresentAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     }
 }
 
-// ViewCon
-
+class PresentLeftAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0.3
+    }
+    
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        guard let toVC = transitionContext.viewController(forKey: .to) else { return }
+        
+        let containerView = transitionContext.containerView
+        let finalFrame = transitionContext.finalFrame(for: toVC)
+        
+        toVC.view.frame = finalFrame.offsetBy(dx: -finalFrame.width, dy: 0)
+        containerView.addSubview(toVC.view)
+        
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
+            toVC.view.frame = finalFrame
+        }) { _ in
+            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+        }
+    }
+}
