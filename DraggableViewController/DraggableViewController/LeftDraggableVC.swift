@@ -25,6 +25,28 @@ class LeftDraggableVC: UIViewController {
         return button
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print(tabBarController)
+        self.presentingViewController?.tabBarController?.tabBar.isHidden = false
+        print("✅✅✅left -viewWillAppear")
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("✅✅✅left -viewDidAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("✅✅✅left - viewWillDisappear")
+    }
+    
+    deinit {
+        print("Left - Deinit🗑️🗑️🗑️")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .yellow

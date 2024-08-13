@@ -26,6 +26,11 @@ class RightDraggableVC: UIViewController {
         return button
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.presentingViewController?.tabBarController?.tabBar.isHidden = false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .green
@@ -39,6 +44,10 @@ class RightDraggableVC: UIViewController {
             pushButton.widthAnchor.constraint(equalToConstant: 200),
             pushButton.heightAnchor.constraint(equalToConstant: 50)
         ])
+    }
+    
+    deinit {
+        print("Left - Deinit🗑️🗑️🗑️")
     }
     
     @objc func pushToSecond() {
@@ -98,7 +107,8 @@ class NewViewController: UIViewController {
         
         view.addSubview(label)
         view.backgroundColor = .darkGray
-        
+        self.presentingViewController?.tabBarController?.tabBar.isHidden = true
+
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             label.centerYAnchor.constraint(equalTo: view.centerYAnchor)

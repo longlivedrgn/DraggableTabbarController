@@ -82,25 +82,29 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("viewWillAppear")
+        print("🚨🚨🚨🚨Home - viewWillAppear")
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("viewDidAppear")
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        print("viewDidDisappear")
+        print("🚨🚨🚨🚨Home -viewDidAppear")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        print("viewWillDisappear")
+        print("🚨🚨🚨🚨Home - viewWillDisappear")
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.captureSession?.stopRunning()
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("🚨🚨🚨🚨Home - viewDidDisappear")
+    }
+    
+    deinit {
+        print("Home - Deinit🗑️🗑️🗑️")
     }
     
     override func viewDidLayoutSubviews() {
@@ -115,11 +119,11 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
         switch gesture.state {
         case .began:
             if translation.x < 0 {  // 오른쪽에서 왼쪽으로 드래그
-                print("🏁 ⬅️ Drag begin \(translation.x)")
+//                print("🏁 ⬅️ Drag begin \(translation.x)")
                 interactionController = UIPercentDrivenInteractiveTransition()
                 presentRightPannableViewController()
             } else if translation.x > 0 {  // 왼쪽에서 오른쪽으로 드래그
-                print("🏁 ➡️ Drag begin \(translation.x)")
+//                print("🏁 ➡️ Drag begin \(translation.x)")
                 interactionController = UIPercentDrivenInteractiveTransition()
                 presentLeftPannableViewController()
             } else {
@@ -137,12 +141,12 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
                 }
                 isStartInTranslationZeroX = false
             }
-            print("🏃🏻‍♂️Drag changed \(translation.x)")
+//            print("🏃🏻‍♂️Drag changed \(translation.x)")
             if let interactionController = interactionController {
                 interactionController.update(progress)
             }
         case .ended, .cancelled:
-            print("✅ Drag ended")
+//            print("✅ Drag ended")
             guard let interactionController = interactionController else { return }
 //            if progress > 0.5 || abs(gesture.velocity(in: view).x) > 300 {
             if progress > 0.5 {
@@ -164,7 +168,7 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
         rootVC.delegate = self
         let vc = UINavigationController(rootViewController: rootVC)
         
-        vc.modalPresentationStyle = .custom
+        vc.modalPresentationStyle = .overCurrentContext
         vc.transitioningDelegate = self
         self.present(vc, animated: true)
     }
@@ -174,7 +178,7 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
         rootVC.delegate = self
         let vc = UINavigationController(rootViewController: rootVC)
         
-        vc.modalPresentationStyle = .custom
+        vc.modalPresentationStyle = .overCurrentContext
         vc.transitioningDelegate = self
         self.present(vc, animated: true)
     }
