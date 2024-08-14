@@ -11,7 +11,6 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         let thirdViewController = UIViewController()
         
         // Navigation Controller를 각 ViewController에 래핑
-        let firstNavigationController = UINavigationController(rootViewController: firstViewController)
         let secondNavigationController = UINavigationController(rootViewController: secondViewController)
 
         // Tab Bar Items 설정
@@ -36,7 +35,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         }
 
         // Tab Bar에 ViewControllers 추가
-        self.viewControllers = [firstNavigationController, secondNavigationController, thirdViewController]
+        self.viewControllers = [firstViewController, secondNavigationController, thirdViewController]
 
         // 델리게이트 설정
         self.delegate = self
@@ -48,5 +47,27 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         if let index = viewControllers?.firstIndex(of: viewController) {
             print("Selected tab: \(index)")
         }
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        if let viewControllers = viewControllers,
+           let index = viewControllers.firstIndex(of: viewController),
+           index == 2 { // Third 탭의 인덱스가 2
+            guard let navigationController = selectedViewController as? UINavigationController,
+                  let currentVC = navigationController.viewControllers.first as? ViewController else {
+                return true
+            }
+            let rootVC = RightDraggableVC()
+            rootVC.delegate = currentVC
+            let vc = UINavigationController(rootViewController: rootVC)
+            
+            vc.modalPresentationStyle = .overCurrentContext
+            
+            navigationController.present(vc, animated: false)
+            
+            return false // Third 탭으로의 실제 전환을 막음
+        }
+        
+        return true // 다른 탭들은 정상적으로 선택되도록 함
     }
 }

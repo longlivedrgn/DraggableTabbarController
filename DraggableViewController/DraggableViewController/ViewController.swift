@@ -93,9 +93,6 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("🚨🚨🚨🚨Home - viewWillDisappear")
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.captureSession?.stopRunning()
-        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {

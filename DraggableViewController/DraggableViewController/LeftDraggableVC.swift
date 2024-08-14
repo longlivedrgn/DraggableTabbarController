@@ -27,10 +27,8 @@ class LeftDraggableVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print(tabBarController)
         self.presentingViewController?.tabBarController?.tabBar.isHidden = false
         print("✅✅✅left -viewWillAppear")
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -41,6 +39,11 @@ class LeftDraggableVC: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("✅✅✅left - viewWillDisappear")
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("✅✅✅left - viewDidDisappear")
     }
     
     deinit {

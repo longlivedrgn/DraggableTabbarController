@@ -29,6 +29,27 @@ class RightDraggableVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.presentingViewController?.tabBarController?.tabBar.isHidden = false
+        print("🤢🤢🤢right -viewWillAppear")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("🤢🤢🤢right -viewDidAppear")
+        print(self.presentingViewController)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("🤢🤢🤢right - viewWillDisappear")
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("🤢🤢🤢right - viewDidDisappear")
+    }
+    
+    deinit {
+        print("right - Deinit🗑️🗑️🗑️")
     }
     
     override func viewDidLoad() {
@@ -44,10 +65,6 @@ class RightDraggableVC: UIViewController {
             pushButton.widthAnchor.constraint(equalToConstant: 200),
             pushButton.heightAnchor.constraint(equalToConstant: 50)
         ])
-    }
-    
-    deinit {
-        print("Left - Deinit🗑️🗑️🗑️")
     }
     
     @objc func pushToSecond() {
@@ -97,6 +114,31 @@ class RightDraggableVC: UIViewController {
 
 
 class NewViewController: UIViewController {
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("😸😸😸Pop -viewWillAppear")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("😸😸😸Pop -viewDidAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("😸😸😸Pop - viewWillDisappear")
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("😸😸😸Pop - viewDidDisappear")
+    }
+    
+    deinit {
+        print("Pop - Deinit🗑️🗑️🗑️")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
