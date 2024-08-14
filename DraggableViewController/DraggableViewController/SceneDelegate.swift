@@ -17,6 +17,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+
+        let segmentedPageController = SegmentedPageController()
+        
+        let vc = FirstVC()
+        
+        let vc2 = SecondVC()
+        
+        let vc3 = ThirdVC()
+
+        segmentedPageController.setViewControllers([
+            vc,
+            vc2,
+            vc3,
+        ], using: .none)
+        
+//        segmentedPageController.setSelectedSegmentIndex(0, using: .slide)
+//        segmentedPageController.setSelectedSegmentIndex(1, using: .slide)
+////        segmentedPageController.setSelectedSegmentIndex(1, using: .slide)
+//        segmentedPageController.setSelectedSegmentIndex(2, using: .slide)
+
+        
+        // 윈도우 생성 및 설정
+        window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = segmentedPageController
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
