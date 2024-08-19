@@ -12,6 +12,7 @@
 		432E648A2C69E04500FECE09 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 432E64892C69E04500FECE09 /* Base */; };
 		432E648C2C69E04500FECE09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 432E648B2C69E04500FECE09 /* Assets.xcassets */; };
 		432E648F2C69E04500FECE09 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 432E648E2C69E04500FECE09 /* Base */; };
+		436C6B242C730B6000D69B70 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C6B232C730B6000D69B70 /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		432E648B2C69E04500FECE09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		432E648E2C69E04500FECE09 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		432E64902C69E04500FECE09 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		436C6B232C730B6000D69B70 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				432E64822C69E04500FECE09 /* AppDelegate.swift */,
 				432E64842C69E04500FECE09 /* SceneDelegate.swift */,
+				436C6B232C730B6000D69B70 /* ViewController.swift */,
 				432E64882C69E04500FECE09 /* Main.storyboard */,
 				432E648B2C69E04500FECE09 /* Assets.xcassets */,
 				432E648D2C69E04500FECE09 /* LaunchScreen.storyboard */,
@@ -135,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436C6B242C730B6000D69B70 /* ViewController.swift in Sources */,
 				432E64832C69E04500FECE09 /* AppDelegate.swift in Sources */,
 				432E64852C69E04500FECE09 /* SceneDelegate.swift in Sources */,
 			);
