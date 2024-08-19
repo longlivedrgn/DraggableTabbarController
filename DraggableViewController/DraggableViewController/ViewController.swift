@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UITabBarController {
+class ViewController: SwipeableTabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,21 +20,8 @@ class ViewController: UITabBarController {
             items[1].title = "두번째"
             items[2].title = "세번째"
         }
-
-        /// Set the animation type for swipe
-//        swipeAnimatedTransitioning?.animationType = SwipeAnimationType.push
         
-        /// Set the animation type for tap
-//        tapAnimatedTransitioning?.animationType = SwipeAnimationType.overlap
-
-        /// if you want cycling switch tab, set true 'isCyclingEnabled'
-//        isCyclingEnabled = false
-
-        /// Disable custom transition on tap.
-//        tapAnimatedTransitioning = nil
-        
-        /// Set swipe to only work when strictly horizontal.
-//        diagonalSwipeEnabled = true
+        swipeAnimatedTransitioning?.animationType = SwipeAnimationType.overlap
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
@@ -47,6 +34,12 @@ class FirstVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let tabBarController = self.tabBarController as? ViewController {
+            tabBarController.isSwipeEnabled = true
+        }
     }
     
     private func setupUI() {
@@ -209,8 +202,7 @@ class ThirdVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         if let tabBarController = self.tabBarController as? ViewController {
-            print("Accessed TabBarController directly")
-//            tabBarController.isSwipeEnabled = true
+            tabBarController.isSwipeEnabled = true
         }
     }
     
@@ -233,7 +225,7 @@ class FourthVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let tabBarController = self.tabBarController as? ViewController {
-//            tabBarController.isSwipeEnabled = false
+            tabBarController.isSwipeEnabled = false
         }
     }
     

@@ -13,6 +13,11 @@
 		432E648C2C69E04500FECE09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 432E648B2C69E04500FECE09 /* Assets.xcassets */; };
 		432E648F2C69E04500FECE09 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 432E648E2C69E04500FECE09 /* Base */; };
 		436C6B242C730B6000D69B70 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C6B232C730B6000D69B70 /* ViewController.swift */; };
+		436C6B272C730CD200D69B70 /* SwipeableTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C6B262C730CD200D69B70 /* SwipeableTabBarController.swift */; };
+		436C6B292C730D1D00D69B70 /* SwipeTransitioningProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C6B282C730D1D00D69B70 /* SwipeTransitioningProtocol.swift */; };
+		436C6B2B2C730D4D00D69B70 /* SwipeAnimationable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C6B2A2C730D4D00D69B70 /* SwipeAnimationable.swift */; };
+		436C6B2D2C73111800D69B70 /* SwipeTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C6B2C2C73111800D69B70 /* SwipeTransitionAnimator.swift */; };
+		436C6B2F2C731E4100D69B70 /* SwipeInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C6B2E2C731E4100D69B70 /* SwipeInteractor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +29,11 @@
 		432E648E2C69E04500FECE09 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		432E64902C69E04500FECE09 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		436C6B232C730B6000D69B70 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		436C6B262C730CD200D69B70 /* SwipeableTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableTabBarController.swift; sourceTree = "<group>"; };
+		436C6B282C730D1D00D69B70 /* SwipeTransitioningProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTransitioningProtocol.swift; sourceTree = "<group>"; };
+		436C6B2A2C730D4D00D69B70 /* SwipeAnimationable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeAnimationable.swift; sourceTree = "<group>"; };
+		436C6B2C2C73111800D69B70 /* SwipeTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTransitionAnimator.swift; sourceTree = "<group>"; };
+		436C6B2E2C731E4100D69B70 /* SwipeInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeInteractor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +69,11 @@
 				432E64822C69E04500FECE09 /* AppDelegate.swift */,
 				432E64842C69E04500FECE09 /* SceneDelegate.swift */,
 				436C6B232C730B6000D69B70 /* ViewController.swift */,
+				436C6B262C730CD200D69B70 /* SwipeableTabBarController.swift */,
+				436C6B2E2C731E4100D69B70 /* SwipeInteractor.swift */,
+				436C6B2C2C73111800D69B70 /* SwipeTransitionAnimator.swift */,
+				436C6B282C730D1D00D69B70 /* SwipeTransitioningProtocol.swift */,
+				436C6B2A2C730D4D00D69B70 /* SwipeAnimationable.swift */,
 				432E64882C69E04500FECE09 /* Main.storyboard */,
 				432E648B2C69E04500FECE09 /* Assets.xcassets */,
 				432E648D2C69E04500FECE09 /* LaunchScreen.storyboard */,
@@ -138,8 +153,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436C6B292C730D1D00D69B70 /* SwipeTransitioningProtocol.swift in Sources */,
 				436C6B242C730B6000D69B70 /* ViewController.swift in Sources */,
+				436C6B2B2C730D4D00D69B70 /* SwipeAnimationable.swift in Sources */,
+				436C6B2F2C731E4100D69B70 /* SwipeInteractor.swift in Sources */,
+				436C6B2D2C73111800D69B70 /* SwipeTransitionAnimator.swift in Sources */,
 				432E64832C69E04500FECE09 /* AppDelegate.swift in Sources */,
+				436C6B272C730CD200D69B70 /* SwipeableTabBarController.swift in Sources */,
 				432E64852C69E04500FECE09 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
