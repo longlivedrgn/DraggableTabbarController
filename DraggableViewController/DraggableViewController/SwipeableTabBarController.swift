@@ -117,6 +117,15 @@ extension SwipeableTabBarController: UITabBarControllerDelegate {
         let edge: UIRectEdge = fromVCIndex > toVCIndex ? .right : .left
 
         currentAnimatedTransitioningType?.targetEdge = edge
+        
+        // Center에서 넘어갈 때만 overLap / 그 외에서는 push가 될 수 있도록 구현
+        guard let controllersCount = tabBarController.viewControllers?.count else { return nil }
+        let centerIndex = controllersCount / 2
+        if fromVCIndex == centerIndex {
+            currentAnimatedTransitioningType?.animationType = SwipeAnimationType.overlap
+        } else {
+            currentAnimatedTransitioningType?.animationType = SwipeAnimationType.push
+        }
         return currentAnimatedTransitioningType
     }
     
