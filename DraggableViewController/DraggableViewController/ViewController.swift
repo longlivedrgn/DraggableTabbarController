@@ -11,7 +11,7 @@ class ViewController: SwipeableTabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewControllers = [UINavigationController(rootViewController:FirstVC()), SecondVC(), UINavigationController(rootViewController: ThirdVC())]
+        viewControllers = [UINavigationController(rootViewController: FirstVC()), SecondVC(), UINavigationController(rootViewController: ThirdVC())]
         if let viewControllers {
             selectedViewController = viewControllers[1]
         }
@@ -22,6 +22,10 @@ class ViewController: SwipeableTabBarController {
         }
         
         swipeAnimatedTransitioning?.animationType = SwipeAnimationType.overlap
+        
+        tabBar.barTintColor = .black
+        tabBar.tintColor = .brown
+        tabBar.isTranslucent = false
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
