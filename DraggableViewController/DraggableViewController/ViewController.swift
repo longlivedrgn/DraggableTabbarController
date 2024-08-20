@@ -1,51 +1,130 @@
+//
+//  ViewController.swift
+//  DraggableViewController
+//
+//  Created by 김용재 on 8/19/24.
+//
+
 import UIKit
-import AVFoundation
 
-class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableVCDelegate {
-    
-    func viewControllerPannableDidDismissed() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.captureSession?.startRunning()
+class ViewController: SwipeableTabBarController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        viewControllers = [UINavigationController(rootViewController: FirstVC()), SecondVC(), UINavigationController(rootViewController: ThirdVC())]
+        if let viewControllers {
+            selectedViewController = viewControllers[1]
         }
+        if let items = self.tabBar.items {
+            items[0].title = "첫번째"
+            items[1].title = "두번째"
+            items[2].title = "세번째"
+        }
+        
+        swipeAnimatedTransitioning?.animationType = SwipeAnimationType.overlap
+        
+        tabBar.barTintColor = .black
+        tabBar.tintColor = .brown
+        tabBar.isTranslucent = false
     }
     
-    func leftViewControllerDidDismiss() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.captureSession?.startRunning()
-        }
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        // Handle didSelect viewController method here
     }
+}
 
-    private var interactionController: UIPercentDrivenInteractiveTransition?
-    private var captureSession: AVCaptureSession?
-    private var previewLayer: AVCaptureVideoPreviewLayer?
-    
-    private let previewView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
-        return view
-    }()
+class FirstVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .red
-        view.addSubview(previewView)
-        setupCamera()
-
-        NSLayoutConstraint.activate([
-            previewView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            previewView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            previewView.heightAnchor.constraint(equalToConstant: 300)
-        ])
-        
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
-        panGesture.delaysTouchesBegan = false
-        panGesture.delaysTouchesEnded = false
-        self.view.addGestureRecognizer(panGesture)
+        setupUI()
     }
     
-    private var isStartInTranslationZeroX = false
+    override func viewWillAppear(_ animated: Bool) {
+        if let tabBarController = self.tabBarController as? ViewController {
+            tabBarController.isSwipeEnabled = true
+        }
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .green
+        
+        let button = UIButton(type: .system)
+        button.setTitle("버튼", for: .normal)
+        button.backgroundColor = .black
+        button.setTitleColor(.white, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        // 버튼에 탭 이벤트 추가
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        
+        view.addSubview(button)
+        
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            button.widthAnchor.constraint(equalToConstant: 100),
+            button.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+    
+    @objc private func buttonTapped() {
+        let fourthVC = FourthVC()
+        fourthVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(fourthVC, animated: true)
+    }
+}
+import UIKit
+import AVFoundation
+import UIKit
+import AVFoundation
+
+class SecondVC: UIViewController {
+    
+    private var captureSession: AVCaptureSession?
+    private var previewLayer: AVCaptureVideoPreviewLayer?
+    private var previewView: UIView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        setupPreviewView()
+        setupCamera()
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .red
+        
+        let button = UIButton(type: .system)
+        button.setTitle("버튼", for: .normal)
+        button.backgroundColor = .black
+        button.setTitleColor(.white, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        
+        view.addSubview(button)
+        
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            button.widthAnchor.constraint(equalToConstant: 100),
+            button.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+    
+    private func setupPreviewView() {
+        previewView = UIView()
+        previewView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(previewView)
+        
+        NSLayoutConstraint.activate([
+            previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            previewView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            previewView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            previewView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/3)
+        ])
+    }
     
     private func setupCamera() {
         captureSession = AVCaptureSession()
@@ -53,7 +132,7 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
         guard let captureSession = captureSession else { return }
         
         guard let camera = AVCaptureDevice.default(for: .video) else {
-            print("Unable to access camera")
+            print("카메라를 사용할 수 없습니다.")
             return
         }
         
@@ -63,7 +142,7 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
                 captureSession.addInput(input)
             }
         } catch {
-            print("Error setting device input: \(error)")
+            print("카메라 입력을 설정하는 중 오류가 발생했습니다: \(error.localizedDescription)")
             return
         }
         
@@ -75,31 +154,8 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
             previewView.layer.addSublayer(previewLayer)
         }
         
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.captureSession?.startRunning()
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("viewWillAppear")
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        print("viewDidAppear")
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        print("viewDidDisappear")
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        print("viewWillDisappear")
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.captureSession?.stopRunning()
+        DispatchQueue.global(qos: .background).async {
+            captureSession.startRunning()
         }
     }
     
@@ -108,133 +164,88 @@ class ViewController: UIViewController, RightDraggableVCDelegate, LeftDraggableV
         previewLayer?.frame = previewView.bounds
     }
     
-    @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
-        let translation = gesture.translation(in: view)
-        let progress = abs(translation.x) / view.bounds.width
-        
-        switch gesture.state {
-        case .began:
-            if translation.x < 0 {  // 오른쪽에서 왼쪽으로 드래그
-                print("🏁 ⬅️ Drag begin \(translation.x)")
-                interactionController = UIPercentDrivenInteractiveTransition()
-                presentRightPannableViewController()
-            } else if translation.x > 0 {  // 왼쪽에서 오른쪽으로 드래그
-                print("🏁 ➡️ Drag begin \(translation.x)")
-                interactionController = UIPercentDrivenInteractiveTransition()
-                presentLeftPannableViewController()
-            } else {
-                isStartInTranslationZeroX = true
-            }
-            
-        case .changed:
-            if isStartInTranslationZeroX == true {
-                if translation.x < 0 {  // 오른쪽에서 왼쪽으로 드래그
-                    interactionController = UIPercentDrivenInteractiveTransition()
-                    presentRightPannableViewController()
-                } else if translation.x > 0 {  // 왼쪽에서 오른쪽으로 드래그
-                    interactionController = UIPercentDrivenInteractiveTransition()
-                    presentLeftPannableViewController()
-                }
-                isStartInTranslationZeroX = false
-            }
-            print("🏃🏻‍♂️Drag changed \(translation.x)")
-            if let interactionController = interactionController {
-                interactionController.update(progress)
-            }
-        case .ended, .cancelled:
-            print("✅ Drag ended")
-            guard let interactionController = interactionController else { return }
-//            if progress > 0.5 || abs(gesture.velocity(in: view).x) > 300 {
-            if progress > 0.5 {
-                interactionController.finish()
-                DispatchQueue.main.async {
-                    self.captureSession?.stopRunning()
-                }
-            } else {
-                interactionController.cancel()
-            }
-            self.interactionController = nil
-        default:
-            break
-        }
-    }
-    
-    private func presentRightPannableViewController() {
-        let rootVC = RightDraggableVC()
-        rootVC.delegate = self
-        let vc = UINavigationController(rootViewController: rootVC)
-        
-        vc.modalPresentationStyle = .custom
-        vc.transitioningDelegate = self
-        self.present(vc, animated: true)
-    }
-    
-    private func presentLeftPannableViewController() {
-        let rootVC = LeftDraggableVC()
-        rootVC.delegate = self
-        let vc = UINavigationController(rootViewController: rootVC)
-        
-        vc.modalPresentationStyle = .custom
-        vc.transitioningDelegate = self
-        self.present(vc, animated: true)
+    @objc private func buttonTapped() {
+        // 여기에 버튼이 탭되었을 때 수행할 동작을 추가하세요
     }
 }
 
-extension ViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if presented.children.first is RightDraggableVC {
-            return PresentRightAnimator()
-        } else if presented.children.first is LeftDraggableVC {
-            return PresentLeftAnimator()
-        }
-        return nil
+import UIKit
+
+class ThirdVC: UIViewController {
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
     }
     
-    func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return interactionController
+    deinit {
+        print("Deinit되었습니다")
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .blue
+        
+        let button = UIButton(type: .system)
+        button.setTitle("버튼", for: .normal)
+        button.backgroundColor = .black
+        button.setTitleColor(.white, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        // 버튼에 탭 이벤트 추가
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        
+        view.addSubview(button)
+        
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            button.widthAnchor.constraint(equalToConstant: 100),
+            button.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let tabBarController = self.tabBarController as? ViewController {
+            tabBarController.isSwipeEnabled = true
+        }
+    }
+    
+    @objc private func buttonTapped() {
+        let fourthVC = FourthVC()
+        fourthVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(fourthVC, animated: true)
     }
 }
 
-class PresentRightAnimator: NSObject, UIViewControllerAnimatedTransitioning {
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.3
-    }
-    
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toVC = transitionContext.viewController(forKey: .to) else { return }
-        
-        let containerView = transitionContext.containerView
-        let finalFrame = transitionContext.finalFrame(for: toVC)
-        
-        toVC.view.frame = finalFrame.offsetBy(dx: finalFrame.width, dy: 0)
-        containerView.addSubview(toVC.view)
-        
-        UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
-            toVC.view.frame = finalFrame
-        }) { _ in
-            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-        }
-    }
-}
 
-class PresentLeftAnimator: NSObject, UIViewControllerAnimatedTransitioning {
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.3
+class FourthVC: UIViewController {
+    override func viewWillDisappear(_ animated: Bool) {
+         super.viewWillDisappear(animated)
+         if isMovingFromParent {
+             tabBarController?.tabBar.isHidden = false
+         }
+     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let tabBarController = self.tabBarController as? ViewController {
+            tabBarController.isSwipeEnabled = false
+        }
     }
     
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toVC = transitionContext.viewController(forKey: .to) else { return }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemPink
+        title = "Fourth View"
         
-        let containerView = transitionContext.containerView
-        let finalFrame = transitionContext.finalFrame(for: toVC)
+        let label = UILabel()
+        label.text = "This is the Fourth View"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
         
-        toVC.view.frame = finalFrame.offsetBy(dx: -finalFrame.width, dy: 0)
-        containerView.addSubview(toVC.view)
-        
-        UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
-            toVC.view.frame = finalFrame
-        }) { _ in
-            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-        }
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
 }
