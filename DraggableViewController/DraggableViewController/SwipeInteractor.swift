@@ -66,25 +66,20 @@ final class SwipeInteractor: UIPercentDrivenInteractiveTransition {
         switch gestureRecognizer.state {
         case .began:
             break
+            
         case .changed:
-            // 만약 -1이라면 transition을 취소한다.
-            if percentForGesture(gestureRecognizer) < 0.0 {
-                cancel()
-                // Need to remove our action from the gesture recognizer to
-                // ensure it will not be called again before deallocation.
-                gestureRecognizer.removeTarget(self, action: #selector(didGestureRecognizeUpdate(_:)))
-            } else {
-                update(percentForGesture(gestureRecognizer))
-            }
+            update(percentForGesture(gestureRecognizer))
+
         case .ended:
             let transitionContainerView = transitionContext?.containerView
             let velocityInContainerView = gestureRecognizer.velocity(in: transitionContainerView)
             let shouldComplete: Bool
+
             switch edge {
             case .left:
-                shouldComplete = (percentForGesture(gestureRecognizer) >= 0.4 && velocityInContainerView.x < xVelocityForCancel) || velocityInContainerView.x < -xVelocityForComplete
+                shouldComplete = (percentForGesture(gestureRecognizer) >= 0.4 && velocityInContainerView.x < xVelocityForCancel) || velocityInContainerView.x < -xVelocityForComplete || (percentForGesture(gestureRecognizer) >= 0.7 && velocityInContainerView.x < -xVelocityForComplete)
             case .right:
-                shouldComplete = (percentForGesture(gestureRecognizer) >= 0.4 && velocityInContainerView.x > -xVelocityForCancel) || velocityInContainerView.x > xVelocityForComplete
+                shouldComplete = (percentForGesture(gestureRecognizer) >= 0.4 && velocityInContainerView.x > -xVelocityForCancel) || velocityInContainerView.x > xVelocityForComplete || (percentForGesture(gestureRecognizer) >= 0.7 && velocityInContainerView.x > xVelocityForComplete)
             default:
                 fatalError("\(edge) is unsupported.")
             }

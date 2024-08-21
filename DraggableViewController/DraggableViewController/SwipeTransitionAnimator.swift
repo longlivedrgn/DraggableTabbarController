@@ -20,7 +20,7 @@ final class SwipeTransitionAnimator: NSObject, SwipeTransitioningProtocol {
     /// 뷰 애니메이션을 더욱 세밀하고 동적으로 제어할 수 있게 도와주는 객체 -`UIViewPropertyAnimator`이다.
     private var viewPropertyAnimator: UIViewAnimating?
     
-    init(animationDuration: TimeInterval = 0.33,
+    init(animationDuration: TimeInterval = 0.12,
          targetEdge: UIRectEdge = .right,
          animationType: SwipeAnimationable) {
         self.animationDuration = animationDuration

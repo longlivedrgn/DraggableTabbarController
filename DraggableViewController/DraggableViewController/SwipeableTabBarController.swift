@@ -72,12 +72,8 @@ class SwipeableTabBarController: UITabBarController {
         } else if translation.x < 0.0 && selectedIndex + 1 < viewControllers?.count ?? 0 {
             selectedIndex += 1
         } else {
-            // Don't reset the gesture recognizer if we skipped starting the
-            // transition because we don't have a translation yet (and thus, could
-            // not determine the transition direction).
+            // 만약 사용자가 왼쪽 탭인데 왼쪽으로 스와이프를 하려고 한다면, 인식기를 껐다가 다시 킨다.(현재 잘못된 스와이프를 무시하고 다시 새로운 스와이프를 시작할 수 있게 해준다.
             if !translation.equalTo(CGPoint.zero) {
-                // There is not a view controller to transition to, force the
-                // gesture recognizer to fail.
                 sender.isEnabled = false
                 sender.isEnabled = true
             }
