@@ -29,6 +29,7 @@ class ViewController: SwipeableTabBarController {
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        viewController.view.alpha = 1.0
         // Handle didSelect viewController method here
     }
 }
