@@ -9,8 +9,8 @@ import UIKit
 
 class SwipeableTabBarController: UITabBarController {
     
-    var swipeAnimatedTransitioning: SwipeTransitioningProtocol? = SwipeTransitionAnimator(animationType: SwipeAnimationType.overlap)
-    
+    var swipeAnimatedTransitioning: SwipeTransitioningProtocol? = SwipeTransitionAnimator(animationType: SwipeAnimationType.overlap(withDimmed: false))
+
     private var currentAnimatedTransitioningType: SwipeTransitioningProtocol?
     
     private var panGestureRecognizer: UIPanGestureRecognizer?
@@ -117,9 +117,9 @@ extension SwipeableTabBarController: UITabBarControllerDelegate {
         guard let controllersCount = tabBarController.viewControllers?.count else { return nil }
         let centerIndex = controllersCount / 2
         if fromVCIndex == centerIndex {
-            currentAnimatedTransitioningType?.animationType = SwipeAnimationType.overlap
+            currentAnimatedTransitioningType?.animationType = SwipeAnimationType.overlap(withDimmed: true)
         } else {
-            currentAnimatedTransitioningType?.animationType = SwipeAnimationType.push
+            currentAnimatedTransitioningType?.animationType = SwipeAnimationType.push(withDimmed: true)
         }
         return currentAnimatedTransitioningType
     }

@@ -21,7 +21,7 @@ class ViewController: SwipeableTabBarController {
             items[2].title = "세번째"
         }
         
-        swipeAnimatedTransitioning?.animationType = SwipeAnimationType.overlap
+        swipeAnimatedTransitioning?.animationType = SwipeAnimationType.overlap(withDimmed: false)
         
         tabBar.barTintColor = .black
         tabBar.tintColor = .brown

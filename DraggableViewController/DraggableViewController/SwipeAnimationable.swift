@@ -21,9 +21,11 @@ protocol SwipeAnimationable {
 /// - overlap: 현재 탭은 가만히 있고, 새로운 탭이 위로 올라와서 감싸는 방법
 /// - push:  애플의 default push 방법도 동일한 방법
 enum SwipeAnimationType: SwipeAnimationable {
-    case overlap // to가 from을 덮는 animation
-    case push // from이 to를 덮는 animation
-    
+
+    /// Dim 여부를 판단하여 alpha 값 조절
+    case overlap(withDimmed: Bool) // to가 from을 덮는 animation / Dim 여부 체크
+    case push(withDimmed: Bool) // from이 to를 덮는 animation / Dim 여부 체크
+
     /// View의 계층구조를 설정
     ///
     /// - Parameters:
@@ -48,11 +50,17 @@ enum SwipeAnimationType: SwipeAnimationable {
     public func prepare(fromView from: UIView, toView to: UIView, direction: Bool) {
         let screenWidth = from.frame.size.width
         switch self {
-        case .overlap:
+        case .overlap(let withDimmed):
             to.frame.origin.x = direction ? -screenWidth : screenWidth
-        case .push:
+            if withDimmed {
+                to.alpha = 1.0
+            }
+        case .push(let withDimmed):
             to.frame.origin.x = 0 // presenting될 view는 화면 그대로 유지
             from.frame.origin.x = 0
+            if withDimmed {
+                to.alpha = 0.0
+            }
         }
     }
 
@@ -65,11 +73,17 @@ enum SwipeAnimationType: SwipeAnimationable {
     public func animation(fromView from: UIView, toView to: UIView, direction: Bool) {
         let screenWidth = from.frame.size.width
         switch self {
-        case .overlap:
+        case .overlap(let withDimmed):
             to.frame.origin.x = 0
-        case .push:
+            if withDimmed {
+                from.alpha = 0.0
+            }
+        case .push(let withDimmed):
             to.frame.origin.x = 0
             from.frame.origin.x = direction ? screenWidth : -screenWidth
+            if withDimmed {
+                to.alpha = 1.0
+            }
         }
     }
 }
