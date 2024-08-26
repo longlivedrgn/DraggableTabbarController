@@ -40,7 +40,6 @@ class SwipeableTabBarController: UITabBarController {
     }
 
     private func setup() {
-        currentAnimatedTransitioningType = swipeAnimatedTransitioning
         delegate = self
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPanGestureRecognizerPan(_:)))
         panGesture.delegate = self
